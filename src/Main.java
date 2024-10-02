@@ -6,6 +6,7 @@ interface BookOperations {
 
 class Book implements BookOperations {
     private static int bookCount = 0;
+
     public static int getBookCount() {
         return bookCount;
     }
@@ -52,7 +53,7 @@ class EBook extends Book {
     }
 }
 
-public class LibrarySystem {
+class LibrarySystem {
     private ArrayList<Book> books = new ArrayList<>();
 
     public void addBook(Book book) {
@@ -101,32 +102,72 @@ public class LibrarySystem {
 
     public static void main(String[] args) {
         LibrarySystem library = new LibrarySystem();
+        while (true) {
+            System.out.println("Library meny: ");
+            System.out.println("1: Add book: ");
+            System.out.println("2: Display all books: ");
+            System.out.println("3: Sort book by price: ");
+            System.out.println("4: Sort book by title: ");
+            System.out.println("5: Search book by title: ");
+            System.out.println("6: Exit: ");
 
-        Book book1 = new Book("Java Programming", 299.99);
-        EBook ebook1 = new EBook("Python Programming", 199.99, 5.0);
+            Scanner input = new Scanner(System.in);
+            int choice = input.nextInt();
+            input.nextLine();
 
-        library.addBook(book1);
-        library.addBook(ebook1);
+            switch (choice) {
+                case 1:
+                    do {
+                        System.out.println("Ange typ av bok:(book eller ebook");
+                        String type = input.nextLine().toLowerCase();
+                        if (!type.equals("book") && !type.equals("ebook")) {
+                            System.out.println("måste vara antingen book eller ebook....");
+                        } else {
 
-        System.out.println("All books:");
-        library.displayAllBooks();
+                            System.out.println("Ange titeln på boken: ");
+                            String title = input.nextLine().toLowerCase();
 
-        System.out.println("\nSorting books by price:");
-        library.bubbleSortByPrice();
-        library.displayAllBooks();
+                            System.out.println("Ange priset på boken: ");
+                            double price = input.nextDouble();
 
-        System.out.println("\nSorting books by title:");
-        library.selectionSortByTitle();
-        library.displayAllBooks();
+                            if (type.equals("book")) {
+                                Book book = new Book(title, price);
+                                library.addBook(book);
+                            } else {
+                                System.out.println("ange fil storlek:");
+                                double fileSize = input.nextDouble();
+                                EBook eBook = new EBook(title, price, fileSize);
+                                library.addBook(eBook);
+                            }
+                            break;
+                        }
+                    }while(true);
+                    break;
+                case 2:
+                    library.displayAllBooks();
+                    break;
+                case 3:
+                    library.bubbleSortByPrice();
+                    library.displayAllBooks();
+                    break;
+                case 4:
+                    library.selectionSortByTitle();
+                    library.displayAllBooks();
+                    break;
+                case 5:
+                    System.out.println("\nSearching for book with title 'Java':");
+                    Book foundBook = library.linearSearch("Java");
+                    if (foundBook != null) {
+                        foundBook.displayDetails();
+                    } else {
+                        System.out.println("Book not found.");
+                    }
 
-        System.out.println("\nSearching for book with title 'Java':");
-        Book foundBook = library.linearSearch("Java");
-        if (foundBook != null) {
-            foundBook.displayDetails();
-        } else {
-            System.out.println("Book not found.");
+                    System.out.println("\nTotal number of books: " + Book.getBookCount());
+                    break;
+                case 6:
+                    System.exit(0);
+            }
         }
-
-        System.out.println("\nTotal number of books: " + Book.getBookCount());
     }
 }
